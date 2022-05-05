@@ -2,6 +2,7 @@ import {
   Component,
   ElementRef,
   EventEmitter,
+  HostListener,
   Input,
   OnInit,
   Output,
@@ -34,7 +35,17 @@ export class ChatCardComponent implements OnInit {
   @Output('chatStarted') chatStarted = new EventEmitter();
   @Output('exitGroup') exitGroup = new EventEmitter();
   @ViewChild('chatBody') chatBody!: ElementRef;
-
+  @HostListener('window:focus', ['$event']) onFocus(event: any): void {
+    if (
+      this.chats?.some((m: any) =>
+        m?.members?.some(
+          (m: any) =>
+            m?.isSeen === false && m?.member?._id === this.currentUser?._id
+        )
+      )
+    )
+      this.updateSeen();
+  }
   selectedMembers: any = [];
 
   selectedMembersToRemove: any = [];
@@ -46,6 +57,9 @@ export class ChatCardComponent implements OnInit {
   ) {
     this.avatarUrl = environment.avatarUrl;
     this.groupIconUrl = environment.groupIconUrl;
+
+    if (document.visibilityState === 'visible') {
+    }
   }
 
   ngOnInit(): void {
@@ -54,7 +68,7 @@ export class ChatCardComponent implements OnInit {
         this.chats.push(response?.data);
         setTimeout(() => {
           this.scrollToBottom();
-          this.updateSeen();
+          if (document.visibilityState === 'visible') this.updateSeen();
         }, 10);
       }
     });
