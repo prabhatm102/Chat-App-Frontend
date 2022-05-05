@@ -34,15 +34,15 @@ export class ChatFormComponent implements OnInit {
 
   send() {
     if (!this.form.valid) return;
-
+    let message = this.form.get('message').value;
+    this.form.reset();
     this.conversationService
       .sendMessage(this.receiver?._id, {
-        message: this.form.get('message').value,
+        message,
       })
       .subscribe(
         (response) => {
           this.chat.emit(response?.data);
-          this.form.reset();
         },
         (error) => {
           this.handleError(error);

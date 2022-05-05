@@ -43,8 +43,10 @@ export class ChatCardComponent implements OnInit {
             m?.isSeen === false && m?.member?._id === this.currentUser?._id
         )
       )
-    )
+    ) {
+      this.scrollToBottom();
       this.updateSeen();
+    }
   }
   selectedMembers: any = [];
 

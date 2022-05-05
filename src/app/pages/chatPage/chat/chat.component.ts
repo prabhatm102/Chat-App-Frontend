@@ -73,7 +73,7 @@ export class ChatComponent implements OnInit {
   ngOnInit(): void {
     this.socket.OnAddedToGroup().subscribe(
       (response: any) => {
-        this.addGroup(response?.data);
+        this.addGroup(response?.data, true);
       },
       (error) => {
         this.handleError(error);
@@ -123,20 +123,21 @@ export class ChatComponent implements OnInit {
     else this.notificationService.showError('Something went wrong!', '500');
   }
 
-  addGroup(group: any) {
+  addGroup(group: any, showToaster?: boolean) {
     let msg;
     let index = this.recentConversations.findIndex(
       (c: any) => c?._id === group?._id
     );
     if (index === -1) {
-      msg = 'Some members have been added to this group';
       this.recentConversations.unshift(group);
     } else {
-      msg = 'You have been added to a new group';
       this.recentConversations[index] = group;
     }
-
-    this.notificationService.showSuccess(msg, group?.name);
+    if (showToaster)
+      this.notificationService.showSuccess(
+        'New group members have joined',
+        group?.name
+      );
   }
 
   removeGroup(group: any) {
