@@ -1,0 +1,72 @@
+<nav class="navbar navbar-expand-lg navbar-light shadow p-3 rounded sticky-top"
+    style="background-color: rgb(186, 229, 215);">
+    <div class="container-fluid">
+        <a routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" class="navbar-brand" routerLink="/">Chat
+            App</a>
+        <button class="navbar-toggler" type="button" (click)="isMenuCollapsed = !isMenuCollapsed"
+            aria-controls="media-navbar" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" [ngbCollapse]="isMenuCollapsed" id="media-navbar">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" class="nav-link"
+                        routerLink="">Home</a>
+                </li>
+                <li class="nav-item" *ngIf="auth.isLoggedIn()">
+                    <a routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" class="nav-link"
+                        routerLink="users">Users</a>
+                </li>
+                <li class="nav-item" *ngIf="auth.isLoggedIn()">
+                    <a routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" class="nav-link"
+                        routerLink="chats">Chats</a>
+                </li>
+                <!-- <li class="nav-item" *ngIf="auth.isLoggedIn()">
+                    <a routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" class="nav-link" routerLink="posts">Posts</a>
+                </li> -->
+                <li class="nav-item float-end">
+
+                </li>
+                <li class="nav-item" *ngIf="!auth.isLoggedIn()">
+                    <a routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" class="nav-link"
+                        routerLink="users/signup">Sign Up</a>
+                </li>
+                <li class="nav-item" *ngIf="!auth.isLoggedIn()">
+                    <a routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" class="nav-link"
+                        routerLink="users/login">Sign In</a>
+                </li>
+
+            </ul>
+
+            <ul class="navbar-nav me-5 mb-2 mb-lg-0 float-end">
+                <div ngbDropdown>
+                    <li class="nav-item dropdown" *ngIf="auth.isLoggedIn()" (click)="toggleProfileMenu()">
+                        <a ngbDropdownToggle routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"
+                            class="nav-link " id="myprofile" role="button" aria-expanded="false">
+
+                            <div class="float-start text-center text-primary me-2">
+
+                                <img [src]="avatarUrl+currentUser?.avatar" class="img-responsive rounded-circle"
+                                    style="width:30px;height: 30px;"
+                                    onerror="this.parentElement.innerHTML='<i class=bi-image-alt></i>'">
+                            </div>
+                            {{currentUser?.name}}
+                        </a>
+
+                        <ul ngbDropdownMenu class="dropdown-menu dropdown-menu-light" aria-labelledby="myprofile"
+                            *ngIf="showProfileMenu">
+                            <li ngbDropdownItem>
+                                <a class="dropdown-item" [routerLink]="['users','profile',currentUser?._id]">
+                                    View Profile
+                                </a>
+                            </li>
+                            <li ngbDropdownItem class="logout">
+                                <a class="dropdown-item" (click)="auth.logout()">Logout</a>
+                            </li>
+                        </ul>
+                    </li>
+                </div>
+            </ul>
+        </div>
+    </div>
+</nav>

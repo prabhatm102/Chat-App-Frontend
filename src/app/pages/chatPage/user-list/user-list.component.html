@@ -1,0 +1,145 @@
+<div class="user-list">
+    <div class="user-list-header bg-secondary d-inline-block w-100 text-light" style="height: 56px;">
+        <div class="">
+            <div class="float-start p-0 fs-2 mx-5 clickable">
+                <a [routerLink]="['/','chats']" class="text-decoration-none text-center text-white fs-4 position-sticky"
+                    aria-current="true">
+                    {{title }}
+                </a>
+            </div>
+            <div class="float-end fs-3 p-2">
+                <div class="float-end me-2 clickable" data-bs-toggle="tooltip" data-bs-placement="bottom"
+                    data-bs-toggle="modal" data-bs-target="#groupModel" title="Create Group"
+                    (click)="openCreateGroupModel()"><i class="bi bi-person-plus-fill"></i></div>
+            </div>
+        </div>
+    </div>
+    <div class="user-list-body">
+
+        <div class="list-group  overflow-auto user-list p-0" style="max-height:200px;border-radius: 0%;width: 100%;"
+            *ngIf="users?.length>0;else noUser">
+
+            <div class="" *ngFor="let user of users">
+                <a [routerLink]=" ['/','chats']" [queryParams]="{receiver:user?._id}"
+                    [class.active]="selectedId===user?._id" class="list-group-item" aria-current=" true">
+                    <a (click)="$event.stopPropagation()" [routerLink]="['/','users','profile',user?._id]"
+                        class="text-dark">
+                        <span class="d-inline-block text-center" style="min-height: 40px;min-width:40px">
+
+                            <img [src]="avatarUrl+user?.avatar" class="img-responsive rounded-circle"
+                                style="width:40px;height: 40px;" />
+                        </span>
+                    </a>
+                    <span class="fw-bolder mx-2">{{ user?.name | titlecase}}</span>
+
+                </a>
+            </div>
+        </div>
+        <ng-template #noUser>
+            <div class="list-group">
+                <li class="list-group-item">
+                    There is no users are available...
+                </li>
+            </div>
+        </ng-template>
+    </div>
+</div>
+
+
+
+
+<div class="modal fade" id="groupModel" tabindex="-1" aria-labelledby="groupModelLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="groupModelLabel">Create Group </h5>
+
+            </div>
+            <div class="modal-body p-0 m-0">
+
+                <form class="p-2" [formGroup]="form" (ngSubmit)="createGroup()">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Group Name<span class="required">*</span></label>
+                        <input type="text" formControlName="name" name="name" id="name" class="form-control">
+                        <div *ngIf="!name.valid && name.touched">
+                            <div class="text-danger" *ngIf="name.errors?.['required']">Group name is required</div>
+                            <div class="text-danger" *ngIf="!name.errors?.['required'] && name.errors?.['minlength']">
+                                Group name
+                                should be minimum
+                                {{name?.errors?.['minlength']?.requiredLength}} characters</div>
+                            <div class="text-danger" *ngIf="name.errors?.['maxlength']">Group name should be maximum
+                                {{name?.errors?.['maxlength']?.requiredLength}} characters</div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="groupIcon" class="form-label">Group Icon<span class="required">*</span></label>
+                        <input type="file" (change)="onFileSelect($event)" formControlName="groupIcon" name="groupIcon"
+                            id="groupIcon" class="form-control">
+
+                        <div *ngIf="!groupIcon.valid && groupIcon.touched">
+                            <div class="text-danger" *ngIf="groupIcon.errors?.['required']">Group Icon is required
+                            </div>
+                            <div class="text-danger" *ngIf="groupIcon.errors?.['invalidFileExtension']">Only jpg and
+                                png files
+                                are allowed</div>
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="container-fluid p-1">
+                        <div class="row">
+                            <div class="card-header bg-primary text-white d-flex col-12 ">Total Selected Users
+                                {{selectedGroupUser?.length}}</div>
+                            <div class="d-flex col-12  shadow bg-body rounded card-body"
+                                style="overflow-x: auto; white-space: nowrap;">
+                                <div *ngFor="let user of users" class="mb-3 mt-2">
+                                    <div class="card mx-2" style="width: 100px">
+                                        <div>
+                                            <div style="min-height:50px ;" class="mt-2 text-center text-primary">
+                                                <img [src]="avatarUrl+user?.avatar" style="width:50px;height: 50px;"
+                                                    class="rounded-circle card-img-top img-responsive" alt="..."
+                                                    onerror="this.parentElement.innerHTML='<i class=bi-image-alt></i>'">
+                                            </div>
+
+                                            <div class="card-body  ">
+                                                <strong class="card-title text-truncate d-inline-block"
+                                                    style="max-width: 60px;">{{user?.name?.split(" ")[0]}}</strong>
+                                            </div>
+                                        </div>
+
+                                        <button type="button" class="btn btn-sm btn-success fs-7"
+                                            *ngIf="!user?.isSelected" (click)="toggleGroupUser(user)">
+                                            <i class="bi bi-person-plus-fill fs-4"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-danger fs-7"
+                                            *ngIf="user?.isSelected" (click)="toggleGroupUser(user)">
+                                            <i class="bi bi-person-dash-fill fs-4"></i>
+
+                                        </button>
+                                        <span *ngIf="user?.isSelected"
+                                            class="position-absolute top-0 start-100 translate-middle p-2 bg-light border border-light rounded-circle">
+                                            <span><i class="bi bi-check-circle-fill p-0 text-success"></i></span>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="mb-2" *ngIf="users.length===0">
+                                    There is no friends. </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-end mt-1">
+                        <input type="submit" class="btn btn-primary me-3" value="Create Group"
+                            [disabled]="!form.valid || selectedGroupUser?.length<=0" data-bs-dismiss="modal">
+                        <button type="button" class="btn btn-secondary me-1" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

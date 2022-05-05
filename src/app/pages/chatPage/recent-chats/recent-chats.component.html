@@ -1,0 +1,64 @@
+<div class="recent-chat">
+    <div class="recent-chat
+    -header bg-success  d-inline-block w-100 text-light" style="height: 56px;">
+        <div class="text-center p-0 fs-2 mx-5 clickable">
+            <a [routerLink]="['/','chats']" class="text-decoration-none text-center text-white fs-4 position-sticky"
+                aria-current="true">
+                {{title }}
+            </a>
+        </div>
+    </div>
+    <div class="recent-chat-body">
+
+        <div class="list-group  overflow-auto recent-chat
+         p-0" style="max-height:200px;border-radius: 0%;width: 100%;" *ngIf="coversations?.length>0;else noUser">
+
+            <div class="" *ngFor="let conversation of coversations">
+
+                <div>
+
+                    <a *ngIf="conversation?.isGroup;else privateChat" [routerLink]=" ['/','chats']"
+                        [queryParams]="{receiver:conversation?._id}" [class.active]="selectedId===conversation?._id"
+                        class="list-group-item" aria-current=" true">
+                        <span class="d-inline-block text-center" style="min-height: 40px;min-width:40px">
+
+                            <img [src]="groupIconUrl+'/'+conversation?.groupIcon" class="img-responsive rounded-circle"
+                                style="width:40px;height: 40px;" />
+                        </span>
+                        <span class="fw-bolder mx-2">{{ conversation?.name | titlecase}}</span>
+                        <span class="fw-bolder fw-3 p-2  float-end"><i class="bi bi-people-fill"></i></span>
+                    </a>
+
+                    <ng-template #privateChat>
+                        {{getIndex(conversation)}}
+                        <a [routerLink]=" ['/','chats']" [queryParams]="{receiver:conversation?.members[index]?._id}"
+                            [class.active]="selectedId===conversation?.members[index]?._id" class="list-group-item"
+                            aria-current=" true">
+                            <a (click)="$event.stopPropagation()"
+                                [routerLink]="['/','users','profile',conversation?.members[index]?._id]"
+                                class="text-dark">
+                                <span class="d-inline-block text-center" style="min-height: 40px;min-width:40px">
+
+                                    <img [src]="avatarUrl +'/'+conversation?.members[index]?.avatar"
+                                        class="img-responsive rounded-circle" style="width:40px;height: 40px;" />
+                                </span>
+                            </a>
+                            <span class="fw-bolder mx-2">{{ conversation?.members[index]?.name | titlecase}}</span>
+
+                            <span class="fw-bolder fw-3 p-2  float-end"><i class="bi bi-person-circle"></i></span>
+                        </a>
+                    </ng-template>
+                </div>
+
+
+            </div>
+        </div>
+        <ng-template #noUser>
+            <div class="list-group">
+                <li class="list-group-item">
+                    There is no recent chats are available...
+                </li>
+            </div>
+        </ng-template>
+    </div>
+</div>

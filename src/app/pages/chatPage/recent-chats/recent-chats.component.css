@@ -1,0 +1,11 @@
+.recent-chat::-webkit-scrollbar {
+    background-color: white;
+    width: 5px !important;
+}
+
+/* //rgb(231, 147, 147) !important; */
+
+.recent-chat::-webkit-scrollbar-thumb {
+    background-color: #D3D3D3;
+    /* border-radius: 10px !important; */
+}

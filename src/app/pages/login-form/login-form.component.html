@@ -1,0 +1,38 @@
+<div class="container">
+    <div class="row">
+        <div class="col-6 offset-3 mt-5  shadow p-3 mb-5 bg-body rounded">
+            <div class="fs-4 text-center">Sign In</div>
+            <div *ngIf="!form.valid && form.touched">
+                <div class="text-danger" *ngIf="form.errors?.['loginErrros']">{{form.errors?.['loginErrros']}}
+                </div>
+
+            </div>
+            <form [formGroup]="form" (ngSubmit)=" submit()">
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email<span class="required">*</span></label>
+                    <input type="email" formControlName="email" name="email" id="email" class="form-control">
+                    <div *ngIf="!email.valid && email.touched">
+                        <div class="text-danger" *ngIf="email.errors?.['required']">Email is required</div>
+                        <div class="text-danger" *ngIf="email.errors?.['email']">Email is should be valid email</div>
+                        <div class="text-danger" *ngIf="email.errors?.['maxlength']">Email should be maximum
+                            {{email?.errors?.['maxlength']?.requiredLength}} characters</div>
+                    </div>
+
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password<span class="required">*</span></label>
+                    <input type="password" formControlName="password" name="password" id="password"
+                        class="form-control">
+                    <div *ngIf="!password.valid && password.touched">
+                        <div class="text-danger" *ngIf="password.errors?.['required']">Password is required</div>
+                        <div class="text-danger" *ngIf="password.errors?.['minlength']">Password must be atleast
+                            {{password.errors?.['minlength']['requiredLength']}} characters</div>
+                        <div class="text-danger" *ngIf="password.errors?.['maxlength']">Password should be only
+                            {{password.errors?.['maxlength']['requiredLength']}} characters long</div>
+                    </div>
+                </div>
+                <input type="submit" class="btn btn-primary" value="Login" [disabled]="!form.valid">
+            </form>
+        </div>
+    </div>
+</div>

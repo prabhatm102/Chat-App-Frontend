@@ -1,0 +1,53 @@
+.self{
+    background-color: #98fb98;
+    margin-left: 58%;
+}
+.friend{
+margin-right: 58%;
+;
+}
+
+.chat-card-body::-webkit-scrollbar {
+    background-color:bisque;
+    width: 5px !important;
+}
+
+.chat-card-body::-webkit-scrollbar-thumb {
+    background-color:#b1aeae;
+    /* border-radius: 10px !important; */
+}
+
+.chat-card-body{
+    overflow-x: clip !important;
+    background-size: cover;
+}
+
+.dropdown-toggle::after {
+    display: none;
+}
+
+.deleteMessage:hover{
+    color:red;
+    background-color:white;
+}
+
+.ng-select.custom {
+    border: 0px;
+    min-height: 0px;
+    border-radius: 0;
+}
+
+.ng-select.custom .ng-select-container {
+    min-height: 0px;
+    border-radius: 0;
+}
+
+.group-members::-webkit-scrollbar {
+    background-color: bisque;
+    width: 2px !important;
+}
+
+.group-members::-webkit-scrollbar-thumb {
+    background-color: #686464;
+    border-radius: 10px !important;
+}

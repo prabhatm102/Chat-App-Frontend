@@ -1,0 +1,27 @@
+<div class="container m-0 p-0">
+    <form [formGroup]="form" (ngSubmit)="send()">
+        <div class="row">
+            <div class="col">
+                <div class="float-start text-start me-1" style="width:5% ">
+                    <a [routerLink]="['/','users','profile',user?._id]" class="text-dark text-decoration-none"
+                        *ngIf="user?.avatar || user?.groupIcon">
+                        <img [src]="avatarUrl+user?.avatar" class="p-0  border-0 rounded-circle img-fluid"
+                            style="width:40px;height:auto;"
+                            onerror="this.parentElement.innerHTML='<i class=bi-image-alt></i>'" />
+                    </a>
+                </div>
+                <div class="float-start" style="width:87%">
+                    <input type="text" formControlName="message" name="message" id="message" class="form-control "
+                        placeholder="Type a message.....">
+                </div>
+                <div class="float-end" style="width:5%">
+
+                    <button type="submit" class="btn btn-success rounded-circle" style="height:40px;width:40px;"
+                        *ngIf="form.valid"><i class="bi bi-send-fill"></i></button>
+                </div>
+            </div>
+
+        </div>
+
+    </form>
+</div>

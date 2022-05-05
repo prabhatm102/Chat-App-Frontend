@@ -1,0 +1,19 @@
+<div class="container-fluid">
+    <div class="row mt-3">
+        <div class="col-md-4 p-0 mb-5">
+            <div style="min-height:250px">
+                <recent-chats [coversations]="recentConversations" [currentUserId]="currentUser?._id"
+                    title="Recent Chats" [selectedId]="user?._id"></recent-chats>
+            </div>
+            <div class="mt-1" style="min-height:250px">
+                <user-list [users]="users" [selectedId]="user?._id" title="All Users" headerBackgroundColor="#0d6efd"
+                    (onGroupCreate)="addGroup($event)">
+                </user-list>
+            </div>
+        </div>
+        <div class="col p-0 pe-1" *ngIf="user?._id">
+            <chat-card [currentUser]="currentUser" [user]="user" (chatStarted)="onChatStarted($event)"
+                [allUsers]="users" (exitGroup)="removeGroup($event)"></chat-card>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,173 @@
+<div class="chat-card container m-0 p-0">
+    <div class="chat-card-header row m-0 bg-secondary text-white p-1 " style="border:0.1 px solid black">
+        <div class="receiver-info col-3 ">
+            <div class="float-start me-3">
+                <a [routerLink]="['/','users','profile',user?._id]" class="text-dark">
+                    <span class="d-inline-block text-center">
+                        <img [src]="user?.isGroup?(groupIconUrl+user.groupIcon):(avatarUrl+user?.avatar)"
+                            class="rounded-circle" style="width:40px;height:auto;"
+                            onload="this.style='display:inline-block;width:40px;'"
+                            onerror="this.style='display:none;width:0px'" #userImg />
+                        <i class='bi-image-alt' style="height:40px;width:40px" *ngIf="userImg.style.width==='0px' "></i>
+                    </span>
+                </a>
+            </div>
+
+            <div class="float-start mt-2">
+
+                <span class="fw-bolder ">{{ user?.name |
+                    titlecase}}</span>
+            </div>
+
+
+        </div>
+        <div class="col">
+
+        </div>
+        <div class="chat-actions col-4 text-end">
+            <div class="text-start d-inline-block mx-3 fs-2  clickable" *ngIf="user?.isGroup">
+                <i class="bi bi-info-circle-fill" (click)="openGroupInfoModel()" data-bs-toggle="modal"
+                    data-bs-target="#groupInfo">
+                </i>
+            </div>
+            <div class="text-center d-inline-block mx-3 fs-2 clickable">
+                <i class="bi bi-camera-video-fill"></i>
+            </div>
+            <div class="fs-2 text-end d-inline-block mx-3 clickable" ngbDropdown placement="bottom-right">
+                <i ngbDropdownToggle class="bi bi-three-dots-vertical" role="button" aria-expanded="false"></i>
+                <ul class="dropdown-menu" ngbDropdownMenu>
+                    <li ngbDropdownItem><a [routerLink]="['/','users','profile',user?._id]"
+                            class="dropdown-item">View</a></li>
+                    <form class="d-flex">
+                        <label>
+                            <li ngbDropdownItem><a class="dropdown-item">WallPaper</a></li>
+                            <input type="file" style="display:none" (change)="onFileSelect($event)">
+                        </label>
+                    </form>
+
+                    <li ngbDropdownItem><a class="dropdown-item" (click)="clearChat()">Clear chat</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="chat-card-body" [style.background-image]="'url('+wallpaper+')'" #chatBody
+        style="max-height: 400px;min-height:400px;overflow-y:scroll;background-color:bisque;">
+        <div *ngFor="let chat of chats" class="m-2 me-2 w-100">
+            <div class="p-2 rounded-3 text-break" style="max-width:40%"
+                [ngClass]="{'self ':chat?.sender?._id===currentUser?._id,'bg-white friend':chat?.sender?._id!==currentUser?._id}">
+
+                <div class="text-start">
+                    {{chat?.message}}
+                    <div class="float-end clickable" ngbDropdown placement="bottom-right">
+                        <i ngbDropdownToggle class="bi bi-three-dots-vertical" role="button" aria-expanded="false"></i>
+                        <ul class="dropdown-menu p-0 " ngbDropdownMenu>
+                            <li ngbDropdownItem class="deleteMessage"><a class="dropdown-item deleteMessage"
+                                    (click)="clearChat(chat)">Delete
+                                    message</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="text-end text-muted fs-6 ">
+                    {{chat?.sender?.name }} {{chat?.updatedAt | date:'short'}} <span class="fs-5"
+                        [class.text-primary]="false" *ngIf="chat?.sender?._id===currentUser?._id">
+                        <i class="bi bi-check-all" [class.text-primary]="isSeen(chat?.members)"></i>
+                    </span>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="chat-card-footer border p-2">
+        <chat-form [sender]="currentUser" (chat)="sendMessage($event)" [receiver]="user"></chat-form>
+    </div>
+</div>
+
+
+<div *ngIf="user?.isGroup" class="modal fade" id="groupInfo" tabindex="-1" aria-labelledby="groupInfoLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="groupInfoLabel">Group Info</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0 m-0">
+                <div class="container-fluid m-0 p-0">
+                    <div class="row ps-2 pe-4 pt-1">
+                        <div class="col-2">
+                            <label>All users</label>
+                        </div>
+                        <div class="col">
+                            <ng-select [items]="allUsers" bindLabel="name" bindValue="_id" [multiple]="true"
+                                [(ngModel)]="selectedMembers" name="all Users"
+                                placeholder="Select to add users to group" class="d-inline-block">
+                                <!-- <ng-option *ngFor="let user of allUsers" [value]="user?._id">{{user?.name}}</ng-option> -->
+                            </ng-select>
+                        </div>
+                        <div class="col-2">
+                            <button class="btn btn-primary btn-sm  mx-2" (click)="addMembers()"
+                                [disabled]="selectedMembers?.length===0">Add Member</button>
+                        </div>
+                    </div>
+                    <div class="row p-1 m-0">
+                        <div class="card-header bg-primary text-white d-flex col-12 ">Total Group Members :
+                            {{user?.members.length}}
+
+                        </div>
+                        <div *ngIf="selectedMembersToRemove?.length>0"
+                            class="card-action bg-secondary text-white d-flex col-12 p-2">
+                            Selected Members : {{selectedMembersToRemove?.length}}
+                            <button type="button" class="text-end btn btn-danger btn-sm mx-5" (click)="removeMembers()"
+                                [disabled]="selectedMembersToRemove?.length<=0">Remove
+                                members</button>
+                        </div>
+                        <div class="d-flex col-12  shadow bg-body rounded card-body"
+                            style="overflow-x: auto; white-space: nowrap;">
+                            <div *ngFor="let member of user?.members" class="mb-3 mt-2">
+                                <div class="card mx-2" style="width: 100px">
+                                    <div>
+                                        <div style="min-height:50px ;" class="mt-2 text-center text-primary">
+                                            <img [src]="avatarUrl+member?.avatar" style="width:50px;height: 50px;"
+                                                class="rounded-circle card-img-top img-responsive" alt="..."
+                                                onerror="this.parentElement.innerHTML='<i class=bi-image-alt></i>'">
+                                        </div>
+
+                                        <div class="card-body  ">
+                                            <strong class="card-title text-truncate d-inline-block"
+                                                style="max-width: 60px;text-align:center">{{member?._id===currentUser?._id?'You'
+                                                :member?.name?.split(" ")[0]}}</strong>
+                                        </div>
+                                    </div>
+
+                                    <button type="button" class="btn btn-sm btn-success fs-7"
+                                        *ngIf="!member?.isSelected" (click)="toggleGroupUser(member)">
+                                        <i class="bi bi-person-plus-fill fs-4"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-danger fs-7" *ngIf="member?.isSelected"
+                                        (click)="toggleGroupUser(member)">
+                                        <i class="bi bi-person-dash-fill fs-4"></i>
+
+                                    </button>
+                                    <span *ngIf="member?.isSelected"
+                                        class="position-absolute top-0 start-100 translate-middle p-2 bg-light border border-light rounded-circle">
+                                        <span><i class="bi bi-check-circle-fill p-0 text-danger"></i></span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="mb-2" *ngIf="user?.members?.length===0">
+                                There is no friends. </div>
+
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
